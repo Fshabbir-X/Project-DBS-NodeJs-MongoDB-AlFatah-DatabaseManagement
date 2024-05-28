@@ -1,0 +1,2 @@
+# DBS-NodeJs-MongoDB-AlFatah-DatabaseManagement
+ Al-Fatah One Stop Solution is a comprehensive web application designed to streamline and manage various operations for a retail business. This system includes functionalities for handling customers, employees, products, promotions, transactions, feedback, inventory, sales, and suppliers. The application aims to provide a seamless user experience, allowing efficient management of retail operations.
