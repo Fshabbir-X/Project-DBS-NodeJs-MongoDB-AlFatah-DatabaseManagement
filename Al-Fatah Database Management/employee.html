@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-container button[type="submit"],
+        .form-container button[type="button"] {
+            padding: 10px;
+            background-color: rgb(44, 159, 46);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .form-container button[type="submit"]:hover,
+        .form-container button[type="button"]:hover {
+            background-color: yellow;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+
+    <!-- Form for Employee -->
+    <div class="form-container">
+        <h2>Employee Details</h2>
+        <form id="employeeForm" action="#">
+            <label for="employee_id">Employee ID:</label>
+            <input type="text" id="employee_id" name="employee_id" placeholder="Enter Employee ID" required><br><br>
+
+            <label for="employee_name">Employee Name:</label>
+            <input type="text" id="employee_name" name="employee_name" placeholder="Enter Employee Name"
+                required><br><br>
+
+            <label for="employee_contact">Employee Contact:</label>
+            <input type="text" id="employee_contact" name="employee_contact" placeholder="Enter Employee Contact"
+                required><br><br>
+
+            <label for="employee_position">Employee Position:</label>
+            <select id="employee_position" name="employee_position" required>
+                <option value="" disabled selected>Select Employee Position</option>
+                <option value="Store Manager">Store Manager</option>
+                <option value="Pharmacist">Pharmacist</option>
+                <option value="Customer Service Representative">Customer Service Representative</option>
+                <option value="Stock clerk">Stock clerk</option>
+                <option value="Loss Prevention Associate">Loss Prevention Associate</option>
+                <option value="Bakery Associate">Bakery Associate</option>
+                <option value="Seafood Specialist">Seafood Specialist</option>
+                <option value="Butcher">Butcher</option>
+                <option value="Inventory Control Specialist">Inventory Control Specialist</option>
+                <option value="Cashier">Cashier</option>
+                <option value="Assistant Store Manager">Assistant Store Manager</option>
+                <option value="Floral Assistant">Floral Assistant</option>
+                <option value="Bagger">Bagger</option>
+                <option value="Food Preparation Workers">Food Preparation Workers</option>
+                <option value="Shopping Cart Attendant">Shopping Cart Attendant</option>
+            </select><br><br>
+
+            <div class="button-container">
+                <button type="button" id="addButton">Add</button>
+                <button type="button" id="viewButton">View</button>
+                <button type="button" id="updateButton">Update</button>
+                <button type="button" id="deleteButton">Delete</button>
+            </div>
+        </form>
+    </div>
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Add event listeners for buttons
+            document.getElementById("addButton").addEventListener("click", addEmployee);
+            document.getElementById("viewButton").addEventListener("click", viewEmployee);
+            document.getElementById("updateButton").addEventListener("click", updateEmployee);
+            document.getElementById("deleteButton").addEventListener("click", deleteEmployee);
+        });
+
+        async function addEmployee() {
+            const employeeData = {
+                employee_id: document.getElementById('employee_id').value,
+                employee_name: document.getElementById('employee_name').value,
+                employee_contact: document.getElementById('employee_contact').value,
+                employee_position: document.getElementById('employee_position').value
+            };
+
+            try {
+                const response = await fetch('/employees', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(employeeData)
+                });
+
+                if (response.ok) {
+                    alert('Employee added successfully!');
+                    document.getElementById('employeeForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to add employee:', errorData);
+                    alert('Failed to add employee: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding employee: ' + error.message);
+            }
+        }
+
+        async function viewEmployee() {
+            const employeeId = document.getElementById('employee_id').value;
+
+            try {
+                const response = await fetch(`/employees/${employeeId}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const employeeData = await response.json();
+
+                    document.getElementById('employee_name').value = employeeData.employee_name;
+                    document.getElementById('employee_contact').value = employeeData.employee_contact;
+                    document.getElementById('employee_position').value = employeeData.employee_position;
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to view employee:', errorData);
+                    alert('Failed to view employee: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while viewing employee: ' + error.message);
+            }
+        }
+
+        async function updateEmployee() {
+            const employeeId = document.getElementById('employee_id').value;
+            const employeeData = {
+                employee_name: document.getElementById('employee_name').value,
+                employee_contact: document.getElementById('employee_contact').value,
+                employee_position: document.getElementById('employee_position').value
+            };
+
+            try {
+                const response = await fetch(`/employees/${employeeId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(employeeData)
+                });
+
+                if (response.ok) {
+                    alert('Employee updated successfully!');
+                    document.getElementById('employeeForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to update employee:', errorData);
+                    alert('Failed to update employee: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating employee: ' + error.message);
+            }
+        }
+
+        async function deleteEmployee() {
+            const employeeId = document.getElementById('employee_id').value;
+
+            try {
+                const response = await fetch(`/employees/${employeeId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Employee deleted successfully!');
+                    document.getElementById('employeeForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to delete employee:', errorData);
+                    alert('Failed to delete employee: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting employee: ' + error.message);
+            }
+        }
+
+    </script>
+
+</body>
+</html>
+
+
+<!--SERVER.js CODE-->
+
+<!--const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/Al-Fatah', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('Failed to connect to MongoDB:', err));
+
+// Create a mongoose schema for employee
+const employeeSchema = new mongoose.Schema({
+    employee_id: String,
+    employee_name: String,
+    employee_contact: String,
+    employee_position: String
+});
+
+// Create a mongoose model for employee
+const Employee = mongoose.model('Employee', employeeSchema);
+
+// Body parser middleware
+app.use(bodyParser.json());
+
+// Routes
+// Add employee
+app.post('/employees', async (req, res) => {
+    try {
+        const newEmployee = await Employee.create(req.body);
+        res.status(201).json(newEmployee);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// View employee
+app.get('/employees/:id', async (req, res) => {
+    try {
+        const employee = await Employee.findById(req.params.id);
+        if (!employee) throw new Error('Employee not found');
+        res.json(employee);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+// Update employee
+app.put('/employees/:id', async (req, res) => {
+    try {
+        const updatedEmployee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedEmployee) throw new Error('Employee not found');
+        res.json(updatedEmployee);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+// Delete employee
+app.delete('/employees/:id', async (req, res) => {
+    try {
+        const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+        if (!deletedEmployee) throw new Error('Employee not found');
+        res.json({ message: 'Employee deleted successfully' });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+// Start server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));-->
+
+

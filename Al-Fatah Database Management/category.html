@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-container button[type="button"] {
+            padding: 10px;
+            background-color: rgb(44, 159, 46);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .form-container button[type="button"]:hover {
+            background-color: yellow;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+
+    <!-- Form for the category -->
+    <div class="form-container">
+        <h2>Category Details</h2>
+        <form id="categoryForm">
+            <label for="product_id">Product ID:</label>
+            <input type="text" id="product_id" name="product_id" placeholder="Enter Product ID" required><br><br>
+
+            <label for="product_category">Product Category:</label>
+            <select id="product_category" name="product_category" required>
+                <option value="" disabled>Select Category</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Frozen Foods">Frozen Foods</option>
+                <option value="Produce">Produce</option>
+                <option value="Meat & Seafood">Meat & Seafood</option>
+                <option value="Pantry">Pantry</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Household Supplies">Household Supplies</option>
+                <option value="Health & Beauty">Health & Beauty</option>
+                <option value="Baby Products">Baby Products</option>
+                <option value="Pet Supplies">Pet Supplies</option>
+            </select><br><br>
+
+            <div class="button-container">
+                <button type="button" id="addButton">Add</button>
+                <button type="button" id="viewButton">View</button>
+                <button type="button" id="updateButton">Update</button>
+                <button type="button" id="deleteButton">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+
+        document.getElementById('addButton').addEventListener('click', async () => {
+            const categoryData = {
+                product_id: document.getElementById('product_id').value,
+                product_category: document.getElementById('product_category').value
+            };
+
+            try {
+                const response = await fetch('/categories', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(categoryData)
+                });
+
+                if (response.ok) {
+                    alert('Category added successfully!');
+                    document.getElementById('categoryForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to add category:', errorData);
+                    alert('Failed to add category: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding category: ' + error.message);
+            }
+        });
+
+        document.getElementById('viewButton').addEventListener('click', async () => {
+            const productId = document.getElementById('product_id').value;
+
+            try {
+                const response = await fetch(`/categories/${productId}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const categoryData = await response.json();
+
+                    document.getElementById('product_category').value = categoryData.product_category;
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to view category:', errorData);
+                    alert('Failed to view category: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while viewing category: ' + error.message);
+            }
+        });
+
+        document.getElementById('updateButton').addEventListener('click', async () => {
+            const productId = document.getElementById('product_id').value;
+            const categoryData = {
+                product_category: document.getElementById('product_category').value
+            };
+
+            try {
+                const response = await fetch(`/categories/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(categoryData)
+                });
+
+                if (response.ok) {
+                    alert('Category updated successfully!');
+                    document.getElementById('categoryForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to update category:', errorData);
+                    alert('Failed to update category: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating category: ' + error.message);
+            }
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', async () => {
+            const productId = document.getElementById('product_id').value;
+
+            try {
+                const response = await fetch(`/categories/${productId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Category deleted successfully!');
+                    document.getElementById('categoryForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to delete category:', errorData);
+                    alert('Failed to delete category: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting category: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+<!--SERVER.js CODE-->
+
+<!--const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/AlFatah', { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+
+// Define Category schema
+const categorySchema = new mongoose.Schema({
+    product_id: String,
+    product_category: String
+});
+const Category = mongoose.model('Category', categorySchema);
+
+// Middleware
+app.use(bodyParser.json());
+
+// Routes
+// Add Category
+app.post('/categories', async (req, res) => {
+    try {
+        const category = new Category({
+            product_id: req.body.product_id,
+            product_category: req.body.product_category
+        });
+        await category.save();
+        res.status(201).send(category);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// View Category
+app.get('/categories/:id', async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) {
+            return res.status(404).send({ error: 'Category not found' });
+        }
+        res.send(category);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Update Category
+app.put('/categories/:id', async (req, res) => {
+    try {
+        const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!category) {
+            return res.status(404).send({ error: 'Category not found' });
+        }
+        res.send(category);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Delete Category
+app.delete('/categories/:id', async (req, res) => {
+    try {
+        const category = await Category.findByIdAndDelete(req.params.id);
+        if (!category) {
+            return res.status(404).send({ error: 'Category not found' });
+        }
+        res.send({ message: 'Category deleted successfully' });
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+-->

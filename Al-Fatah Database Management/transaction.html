@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            padding: 10px;
+            background-color: rgb(44, 159, 46); 
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .form-container button:hover {
+            background-color: yellow; 
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+    
+    <!-- Form for the transaction -->
+    <div class="form-container">
+        <h2>Transaction Details</h2>
+        <form id="transactionForm">
+            <label for="transaction_id">Transaction ID:</label>
+            <input type="text" id="transaction_id" name="transaction_id" placeholder="Enter Transaction ID" required><br><br>
+            
+            <label for="transaction_date">Transaction Date:</label>
+            <input type="date" id="transaction_date" name="transaction_date" required><br><br>
+            
+            <label for="transaction_time">Transaction Time:</label>
+            <input type="time" id="transaction_time" name="transaction_time" required><br><br>
+            
+            <label for="transaction_amount">Transaction Amount:</label>
+            <input type="number" id="transaction_amount" name="transaction_amount" placeholder="Enter Transaction Amount" required><br><br>
+            
+            <label for="transaction_method">Transaction Method:</label>
+            <select id="transaction_method" name="transaction_method" required>
+                <option value="" disabled selected>Select Transaction Method</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="Cash">Cash</option>
+                <option value="Online Payment">Online Payment</option>
+            </select><br><br>
+            
+            <label for="transaction_loyalty">Transaction Loyalty:</label>
+            <select id="transaction_loyalty" name="transaction_loyalty" required>
+                <option value="" disabled selected>Select Loyalty Status</option>
+                <option value="Bronze">Bronze</option>
+                <option value="Silver">Silver</option>
+                <option value="Gold">Gold</option>
+            </select><br><br>
+            
+            <div class="button-container">
+                <button type="button" id="addButton">Add</button>
+                <button type="button" id="viewButton">View</button>
+                <button type="button" id="updateButton">Update</button>
+                <button type="button" id="deleteButton">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+        document.getElementById('addButton').addEventListener('click', async () => {
+            const transactionData = {
+                transaction_id: document.getElementById('transaction_id').value,
+                transaction_date: document.getElementById('transaction_date').value,
+                transaction_time: document.getElementById('transaction_time').value,
+                transaction_amount: document.getElementById('transaction_amount').value,
+                transaction_method: document.getElementById('transaction_method').value,
+                transaction_loyalty: document.getElementById('transaction_loyalty').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/transactions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transactionData)
+                });
+
+                if (response.ok) {
+                    alert('Transaction added successfully!');
+                    document.getElementById('transactionForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to add transaction:', errorData);
+                    alert('Failed to add transaction: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding transaction: ' + error.message);
+            }
+        });
+
+        document.getElementById('viewButton').addEventListener('click', async () => {
+            const transactionId = document.getElementById('transaction_id').value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/transactions/${transactionId}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const transactionData = await response.json();
+
+                    document.getElementById('transaction_date').value = transactionData.transaction_date;
+                    document.getElementById('transaction_time').value = transactionData.transaction_time;
+                    document.getElementById('transaction_amount').value = transactionData.transaction_amount;
+                    document.getElementById('transaction_method').value = transactionData.transaction_method;
+                    document.getElementById('transaction_loyalty').value = transactionData.transaction_loyalty;
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to view transaction:', errorData);
+                    alert('Failed to view transaction: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while viewing transaction: ' + error.message);
+            }
+        });
+
+        document.getElementById('updateButton').addEventListener('click', async () => {
+            const transactionId = document.getElementById('transaction_id').value;
+            const transactionData = {
+                transaction_date: document.getElementById('transaction_date').value,
+                transaction_time: document.getElementById('transaction_time').value,
+                transaction_amount: document.getElementById('transaction_amount').value,
+                transaction_method: document.getElementById('transaction_method').value,
+                transaction_loyalty: document.getElementById('transaction_loyalty').value
+            };
+
+            try {
+                const response = await fetch(`http://localhost:3000/transactions/${transactionId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transactionData)
+                });
+
+                if (response.ok) {
+                    alert('Transaction updated successfully!');
+                    document.getElementById('transactionForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to update transaction:', errorData);
+                    alert('Failed to update transaction: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating transaction: ' + error.message);
+            }
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', async () => {
+            const transactionId = document.getElementById('transaction_id').value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/transactions/${transactionId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Transaction deleted successfully!');
+                    document.getElementById('transactionForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to delete transaction:', errorData);
+                    alert('Failed to delete transaction: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting transaction: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+<!--SERVER.js CODE-->
+
+<!--const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());
+
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/Al-Fatah', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log(err));
+
+// Transaction Schema
+const transactionSchema = new mongoose.Schema({
+    transaction_id: String,
+    transaction_date: String,
+    transaction_time: String,
+    transaction_amount: Number,
+    transaction_method: String,
+    transaction_loyalty: String
+});
+
+const Transaction = mongoose.model('Transaction', transactionSchema);
+
+// Routes
+
+// Add Transaction
+app.post('/transactions', (req, res) => {
+    const newTransaction = new Transaction(req.body);
+    newTransaction.save()
+        .then(transaction => res.json(transaction))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// View Transaction
+app.get('/transactions/:id', (req, res) => {
+    Transaction.findOne({ transaction_id: req.params.id })
+        .then(transaction => res.json(transaction))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Update Transaction
+app.put('/transactions/:id', (req, res) => {
+    Transaction.findOneAndUpdate({ transaction_id: req.params.id }, req.body, { new: true })
+        .then(transaction => res.json(transaction))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Delete Transaction
+app.delete('/transactions/:id', (req, res) => {
+    Transaction.findOneAndDelete({ transaction_id: req.params.id })
+        .then(() => res.json('Transaction deleted'))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+-->

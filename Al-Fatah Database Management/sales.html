@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .button-container button {
+            flex: 1;
+            padding: 10px;
+            background-color: rgb(44, 159, 46);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+        }
+
+        .button-container button:hover {
+            background-color: yellow;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+
+    <!-- Form for the sales -->
+    <div class="form-container">
+        <h2>Sales Details</h2>
+        <form id="salesForm">
+            <label for="sale_id">Sale ID:</label>
+            <input type="text" id="sale_id" name="sale_id" placeholder="Enter Sale ID" required><br><br>
+
+            <label for="product_id">Product ID:</label>
+            <input type="text" id="product_id" name="product_id" placeholder="Enter Product ID" required><br><br>
+
+            <label for="quantity_purchased">Quantity Purchased:</label>
+            <input type="number" id="quantity_purchased" name="quantity_purchased"
+                placeholder="Enter Quantity Purchased" required><br><br>
+
+            <label for="price_per_unit">Price Per Unit:</label>
+            <input type="number" id="price_per_unit" name="price_per_unit" placeholder="Enter Price Per Unit"
+                required><br><br>
+
+            <label for="sales_invoice">Sales Invoice:</label>
+            <input type="text" id="sales_invoice" name="sales_invoice" placeholder="Enter Sales Invoice"
+                required><br><br>
+
+            <label for="transaction_id">Transaction ID:</label>
+            <input type="text" id="transaction_id" name="transaction_id" placeholder="Enter Transaction ID"
+                required><br><br>
+
+            <div class="button-container">
+                <button type="button" onclick="handleForm('add')">Add</button>
+                <button type="button" onclick="handleForm('view')">View</button>
+                <button type="button" onclick="handleForm('update')">Update</button>
+                <button type="button" onclick="handleForm('delete')">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+        function handleForm(action) {
+            const formData = new FormData(document.getElementById('salesForm'));
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            let url = '';
+            let method = '';
+            switch (action) {
+                case 'add':
+                    url = 'http://localhost:3000/add';
+                    method = 'POST';
+                    break;
+                case 'view':
+                    url = 'http://localhost:3000/view';
+                    method = 'GET';
+                    break;
+                case 'update':
+                    const updateId = prompt('Enter the Sale ID to update:');
+                    url = `http://localhost:3000/update/${updateId}`;
+                    method = 'PUT';
+                    break;
+                case 'delete':
+                    const deleteId = prompt('Enter the Sale ID to delete:');
+                    url = `http://localhost:3000/delete/${deleteId}`;
+                    method = 'DELETE';
+                    break;
+            }
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: action === 'view' ? null : JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    alert(`Operation ${action} completed successfully.`);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(`Operation ${action} failed.`);
+                });
+        }
+    </script>
+</body>
+
+</html>
+
+
+
+<!--SERVER.js CODE-->
+
+<!--const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());
+
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/Al-Fatah', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log(err));
+
+// Sales Schema
+const saleSchema = new mongoose.Schema({
+    sale_id: String,
+    product_id: String,
+    quantity_purchased: Number,
+    price_per_unit: Number,
+    sales_invoice: String,
+    transaction_id: String
+});
+
+const Sale = mongoose.model('Sale', saleSchema);
+
+// Routes
+
+// Add Sale
+app.post('/add', (req, res) => {
+    const newSale = new Sale(req.body);
+    newSale.save()
+        .then(sale => res.json(sale))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// View Sale
+app.get('/view', (req, res) => {
+    Sale.find()
+        .then(sales => res.json(sales))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Update Sale
+app.put('/update/:id', (req, res) => {
+    Sale.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        .then(sale => res.json(sale))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Delete Sale
+app.delete('/delete/:id', (req, res) => {
+    Sale.findByIdAndDelete(req.params.id)
+        .then(() => res.json('Sale deleted'))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+-->

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            padding: 10px;
+            background-color: rgb(44, 159, 46); 
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .form-container button:hover {
+            background-color: yellow; 
+        }
+    </style>
+
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+    
+    <!-- Form for the customer -->
+    <div class="form-container">
+        <h2>Customer Details</h2>
+        <form id="customerForm">
+            <label for="customer_id">Customer ID:</label>
+            <input type="text" id="customer_id" name="customer_id" placeholder="Enter Customer ID" required><br><br>
+            
+            <label for="customer_name">Customer Name:</label>
+            <input type="text" id="customer_name" name="customer_name" placeholder="Enter Customer Name" required><br><br>
+            
+            <label for="customer_contact">Customer Contact:</label>
+            <input type="text" id="customer_contact" name="customer_contact" placeholder="Enter Customer Contact" required><br><br>
+            
+            <label for="customer_status">Customer Status:</label>
+            <select id="customer_status" name="customer_status" required>
+                <option value="" disabled selected>Select Customer Status</option>
+                <option value="Bronze">Bronze</option>
+                <option value="Silver">Silver</option>
+                <option value="Gold">Gold</option>
+            </select><br><br>
+            
+            <div class="button-container">
+                <button type="button" id="addButton">Add</button>
+                <button type="button" id="viewButton">View</button>
+                <button type="button" id="updateButton">Update</button>
+                <button type="button" id="deleteButton">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+        document.getElementById('addButton').addEventListener('click', async () => {
+            const customerData = {
+                customer_id: document.getElementById('customer_id').value,
+                customer_name: document.getElementById('customer_name').value,
+                customer_contact: document.getElementById('customer_contact').value,
+                customer_status: document.getElementById('customer_status').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/customers', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(customerData)
+                });
+
+                if (response.ok) {
+                    alert('Customer added successfully!');
+                    document.getElementById('customerForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to add customer:', errorData);
+                    alert('Failed to add customer: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding customer: ' + error.message);
+            }
+        });
+
+        document.getElementById('viewButton').addEventListener('click', async () => {
+            const customerId = document.getElementById('customer_id').value;
+
+            console.log('Customer ID:', customerId); // Debug log
+
+            try {
+                const response = await fetch(`http://localhost:3000/customers/${customerId}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const customerData = await response.json();
+                    console.log('Customer Data:', customerData); // Debug log
+
+                    document.getElementById('customer_name').value = customerData.customer_name;
+                    document.getElementById('customer_contact').value = customerData.customer_contact;
+                    document.getElementById('customer_status').value = customerData.customer_status;
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to view customer:', errorData);
+                    alert('Failed to view customer: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while viewing customer: ' + error.message);
+            }
+        });
+
+        document.getElementById('updateButton').addEventListener('click', async () => {
+            const customerId = document.getElementById('customer_id').value;
+            const customerData = {
+                customer_name: document.getElementById('customer_name').value,
+                customer_contact: document.getElementById('customer_contact').value,
+                customer_status: document.getElementById('customer_status').value
+            };
+
+            try {
+                const response = await fetch(`http://localhost:3000/customers/${customerId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(customerData)
+                });
+
+                if (response.ok) {
+                    alert('Customer updated successfully!');
+                    document.getElementById('customerForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to update customer:', errorData);
+                    alert('Failed to update customer: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating customer: ' + error.message);
+            }
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', async () => {
+            const customerId = document.getElementById('customer_id').value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/customers/${customerId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Customer deleted successfully!');
+                    document.getElementById('customerForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to delete customer:', errorData);
+                    alert('Failed to delete customer: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting customer: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+<!--SERVER.js CODE-->
+
+<!--const express = require('express');
+const bodyParser = require('body-parser');
+const { MongoClient } = require('mongodb');
+const cors = require('cors');
+const app = express();
+const port = 3000;
+
+app.use(cors());
+app.use(bodyParser.json());
+
+const url = 'mongodb://localhost:27017';
+const dbName = 'Al-Fatah';
+
+app.get('/', (req, res) => {
+    res.send('Welcome to Al-Fatah Customer System');
+});
+
+MongoClient.connect(url)
+    .then(client => {
+        const db = client.db(dbName);
+        const customerCollection = db.collection('customers');
+        console.log(`Connected to database: ${dbName}`);
+
+        // Add Customer
+        app.post('/customers', async (req, res) => {
+            const customer = req.body;
+            try {
+                const result = await customerCollection.insertOne(customer);
+                res.status(200).send('Customer added successfully');
+            } catch (err) {
+                res.status(500).json({ error: err.message });
+            }
+        });
+
+        // View Customer
+        app.get('/customers/:id', async (req, res) => {
+            const customerId = req.params.id;
+            console.log('Received request for customer ID:', customerId); // Debug log
+
+            try {
+                const customer = await customerCollection.findOne({ customer_id: customerId });
+                if (customer) {
+                    console.log('Customer found:', customer); // Debug log
+                    res.status(200).json(customer);
+                } else {
+                    console.log('Customer not found'); // Debug log
+                    res.status(404).json({ error: 'Customer not found' });
+                }
+            } catch (err) {
+                console.error('Error fetching customer:', err);
+                res.status(500).json({ error: err.message });
+            }
+        });
+
+        // Update Customer
+        app.put('/customers/:id', async (req, res) => {
+            const customerId = req.params.id;
+            const updatedData = req.body;
+            try {
+                const result = await customerCollection.updateOne({ customer_id: customerId }, { $set: updatedData });
+                if (result.matchedCount > 0) {
+                    res.status(200).send('Customer updated successfully');
+                } else {
+                    res.status(404).json({ error: 'Customer not found' });
+                }
+            } catch (err) {
+                res.status(500).json({ error: err.message });
+            }
+        });
+
+        // Delete Customer
+        app.delete('/customers/:id', async (req, res) => {
+            const customerId = req.params.id;
+            try {
+                const result = await customerCollection.deleteOne({ customer_id: customerId });
+                if (result.deletedCount > 0) {
+                    res.status(200).send('Customer deleted successfully');
+                } else {
+                    res.status(404).json({ error: 'Customer not found' });
+                }
+            } catch (err) {
+                res.status(500).json({ error: err.message });
+            }
+        });
+
+        app.listen(port, () => {
+            console.log(`Server running at http://localhost:${port}`);
+        });
+    })
+    .catch(err => {
+        console.error('Failed to connect to MongoDB', err);
+        process.exit(1);
+    });
+-->

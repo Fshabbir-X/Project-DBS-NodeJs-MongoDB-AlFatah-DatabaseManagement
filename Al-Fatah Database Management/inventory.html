@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-container button[type="button"] {
+            padding: 10px;
+            background-color: rgb(44, 159, 46);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .form-container button[type="button"]:hover {
+            background-color: yellow;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+
+    <!-- Form for the inventory -->
+    <div class="form-container">
+        <h2>Inventory Details</h2>
+        <form id="inventoryForm">
+            <label for="product_id">Product ID:</label>
+            <input type="text" id="product_id" name="product_id" placeholder="Enter Product ID" required><br><br>
+
+            <label for="stock_quantity">Stock Quantity:</label>
+            <input type="number" id="stock_quantity" name="stock_quantity" placeholder="Enter Stock Quantity"
+                required><br><br>
+
+            <label for="storage_location">Storage Location:</label>
+            <input type="text" id="storage_location" name="storage_location" placeholder="Enter Storage Location"
+                required><br><br>
+
+            <div class="button-container">
+                <button type="button" id="addButton">Add</button>
+                <button type="button" id="viewButton">View</button>
+                <button type="button" id="updateButton">Update</button>
+                <button type="button" id="deleteButton">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+
+        document.getElementById('addButton').addEventListener('click', async () => {
+            const inventoryData = {
+                product_id: document.getElementById('product_id').value,
+                stock_quantity: document.getElementById('stock_quantity').value,
+                storage_location: document.getElementById('storage_location').value
+            };
+
+            try {
+                const response = await fetch('/inventory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(inventoryData)
+                });
+
+                if (response.ok) {
+                    alert('Inventory added successfully!');
+                    document.getElementById('inventoryForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to add inventory:', errorData);
+                    alert('Failed to add inventory: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding inventory: ' + error.message);
+            }
+        });
+
+        document.getElementById('viewButton').addEventListener('click', async () => {
+            const productId = document.getElementById('product_id').value;
+
+            try {
+                const response = await fetch(`/inventory/${productId}`, {
+                    method: 'GET'
+                });
+
+                if (response.ok) {
+                    const inventoryData = await response.json();
+
+                    document.getElementById('stock_quantity').value = inventoryData.stock_quantity;
+                    document.getElementById('storage_location').value = inventoryData.storage_location;
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to view inventory:', errorData);
+                    alert('Failed to view inventory: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while viewing inventory: ' + error.message);
+            }
+        });
+
+        document.getElementById('updateButton').addEventListener('click', async () => {
+            const productId = document.getElementById('product_id').value;
+            const inventoryData = {
+                stock_quantity: document.getElementById('stock_quantity').value,
+                storage_location: document.getElementById('storage_location').value
+            };
+
+            try {
+                const response = await fetch(`/inventory/${productId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(inventoryData)
+                });
+
+                if (response.ok) {
+                    alert('Inventory updated successfully!');
+                    document.getElementById('inventoryForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to update inventory:', errorData);
+                    alert('Failed to update inventory: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating inventory: ' + error.message);
+            }
+        });
+
+        document.getElementById('deleteButton').addEventListener('click', async () => {
+            const productId = document.getElementById('product_id').value;
+
+            try {
+                const response = await fetch(`/inventory/${productId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert('Inventory deleted successfully!');
+                    document.getElementById('inventoryForm').reset();
+                } else {
+                    const errorData = await response.json();
+                    console.error('Failed to delete inventory:', errorData);
+                    alert('Failed to delete inventory: ' + errorData.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting inventory: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+<!--SERVER.js CODE-->
+
+<!--// server.js
+
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const app = express();
+const port = 3000;
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/Al-Fatah', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connected to MongoDB');
+}).catch((error) => {
+    console.error('Failed to connect to MongoDB:', error);
+});
+
+// Define Schema
+const inventorySchema = new mongoose.Schema({
+    product_id: String,
+    stock_quantity: Number,
+    storage_location: String
+});
+
+// Define Model
+const Inventory = mongoose.model('Inventory', inventorySchema);
+
+// Middleware
+app.use(bodyParser.json());
+
+// Routes
+app.post('/inventory', async (req, res) => {
+    try {
+        const inventory = new Inventory(req.body);
+        await inventory.save();
+        res.status(201).send(inventory);
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+});
+
+app.get('/inventory/:product_id', async (req, res) => {
+    try {
+        const product_id = req.params.product_id;
+        const inventory = await Inventory.findOne({ product_id });
+        if (!inventory) {
+            return res.status(404).send({ error: 'Inventory not found' });
+        }
+        res.send(inventory);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
+app.put('/inventory/:product_id', async (req, res) => {
+    try {
+        const product_id = req.params.product_id;
+        const inventory = await Inventory.findOneAndUpdate({ product_id }, req.body, { new: true });
+        if (!inventory) {
+            return res.status(404).send({ error: 'Inventory not found' });
+        }
+        res.send(inventory);
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+});
+
+app.delete('/inventory/:product_id', async (req, res) => {
+    try {
+        const product_id = req.params.product_id;
+        const inventory = await Inventory.findOneAndDelete({ product_id });
+        if (!inventory) {
+            return res.status(404).send({ error: 'Inventory not found' });
+        }
+        res.send({ message: 'Inventory deleted successfully' });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+});
+
+// Start server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
+-->

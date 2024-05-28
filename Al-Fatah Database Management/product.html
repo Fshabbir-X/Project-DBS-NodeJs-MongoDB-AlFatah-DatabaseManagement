@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Al-Fatah | One Stop Solution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .form-container {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-container label {
+            margin-bottom: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .form-container button[type="button"] {
+            padding: 10px;
+            background-color: rgb(44, 159, 46);
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        .form-container button[type="button"]:hover {
+            background-color: yellow;
+        }
+
+        .form-container .button-group {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="alfatahlogo.jpg" alt="">
+            <span class="tagline">One Stop Solution!</span>
+        </div>
+    </header>
+    
+    <!-- Form for product details -->
+    <div class="form-container">
+        <h2>Product Details</h2>
+        <form id="productForm" action="#" method="POST">
+            <label for="product_id">Product ID:</label>
+            <input type="text" id="product_id" name="product_id" placeholder="Enter Product ID" required><br><br>
+            
+            <label for="product_name">Product Name:</label>
+            <input type="text" id="product_name" name="product_name" placeholder="Enter Product Name" required><br><br>
+            
+            <label for="product_price">Product Price:</label>
+            <input type="text" id="product_price" name="product_price" placeholder="Enter Product Price in Rs." required><br><br>
+            
+            <label for="product_qty">Product Quantity:</label>
+            <input type="number" id="product_qty" name="product_qty" placeholder="Enter Product Quantity" required><br><br>
+            
+            <label for="product_category">Product Category:</label>
+            <select id="product_category" name="product_category" required>
+                <option value="" disabled>Select Category</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Dairy">Dairy</option>
+                <option value="Frozen Foods">Frozen Foods</option>
+                <option value="Produce">Produce</option>
+                <option value="Meat & Seafood">Meat & Seafood</option>
+                <option value="Pantry">Pantry</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Household Supplies">Household Supplies</option>
+                <option value="Health & Beauty">Health & Beauty</option>
+                <option value="Baby Products">Baby Products</option>
+                <option value="Pet Supplies">Pet Supplies</option>
+            </select><br><br>
+            
+            <label for="product_supplier">Product Supplier:</label>
+            <input type="text" id="product_supplier" name="product_supplier" placeholder="Enter Product Supplier" required><br><br>
+            
+            <div class="button-group">
+                <button type="button" onclick="addProduct()">Add</button>
+                <button type="button" onclick="viewProduct()">View</button>
+                <button type="button" onclick="updateProduct()">Update</button>
+                <button type="button" onclick="deleteProduct()">Delete</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/alfatahpk/"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/alfatahofficial/?hl=en"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/channel/UC7p1xZdnvPWm6iMCP1V9AoQ"><i class="fab fa-youtube"></i></a>
+        </div>
+        <p>© 2024 Al-Fatah. All rights reserved. (Powered by Devloom)</p>
+    </footer>
+
+    <script>
+        async function addProduct() {
+            const productData = {
+                product_id: document.getElementById('product_id').value,
+                product_name: document.getElementById('product_name').value,
+                product_price: document.getElementById('product_price').value,
+                product_qty: document.getElementById('product_qty').value,
+                product_category: document.getElementById('product_category').value,
+                product_supplier: document.getElementById('product_supplier').value
+            };
+
+            try {
+                const response = await fetch('/add-product', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.message);
+                } else {
+                    throw new Error('Failed to add product');
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+
+        async function viewProduct() {
+            try {
+                const response = await fetch('/view-product');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data); // Display data in console
+                } else {
+                    throw new Error('Failed to fetch product data');
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+
+        async function updateProduct() {
+            const productData = {
+                product_id: document.getElementById('product_id').value,
+                product_name: document.getElementById('product_name').value,
+                product_price: document.getElementById('product_price').value,
+                product_qty: document.getElementById('product_qty').value,
+                product_category: document.getElementById('product_category').value,
+                product_supplier: document.getElementById('product_supplier').value
+            };
+
+            try {
+                const response = await fetch('/update-product', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.message);
+                } else {
+                    throw new Error('Failed to update product');
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+
+        async function deleteProduct() {
+            const productData = {
+                product_id: document.getElementById('product_id').value
+            };
+
+            try {
+                const response = await fetch('/delete-product', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(productData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.message);
+                } else {
+                    throw new Error('Failed to delete product');
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+<!--SERVER.js CODE-->
+
+<!--const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/Al-Fatah', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('Failed to connect to MongoDB:', err));
+
+// Create a mongoose schema for products
+const productSchema = new mongoose.Schema({
+    product_id: String,
+    product_name: String,
+    product_price: Number,
+    product_qty: Number,
+    product_category: String,
+    product_supplier: String
+});
+
+// Create a mongoose model for products
+const Product = mongoose.model('Product', productSchema);
+
+// Body parser middleware
+app.use(bodyParser.json());
+
+// Routes
+// Add product
+app.post('/products', async (req, res) => {
+    try {
+        const newProduct = await Product.create(req.body);
+        res.status(201).json(newProduct);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+// View product
+app.get('/products/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+        if (!product) throw new Error('Product not found');
+        res.json(product);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+// Update product
+app.put('/products/:id', async (req, res) => {
+    try {
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedProduct) throw new Error('Product not found');
+        res.json(updatedProduct);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+// Delete product
+app.delete('/products/:id', async (req, res) => {
+    try {
+        const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+        if (!deletedProduct) throw new Error('Product not found');
+        res.json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+});
+
+// Start server
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+-->
