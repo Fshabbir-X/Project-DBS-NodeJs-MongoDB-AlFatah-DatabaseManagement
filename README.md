@@ -114,6 +114,7 @@ npm install
 
 # Start the server
 node server.js
+```
 
 📌 Usage Example – Category Management
 ➕ Adding a New Category
@@ -137,28 +138,31 @@ node server.js
 
 🔁 The same workflow applies to other modules such as Products, Customers, Employees, Inventory, etc.
 
-📁 File Overview
-1.index.html – Main landing page
-2.styles.css – Application styling
-3.server.js – Backend server & database logic
-4.category.html – Category management
-5.Other HTML files handle individual modules
+---
+📁 **File Overview**  
+1.index.html – Main landing page  
+2.styles.css – Application styling  
+3.server.js – Backend server & database logic  
+4.category.html – Category management  
+5.Other HTML files handle individual modules  
 
-🤝 Contributing
+---
+🤝 **Contributing**  
 
-Contributions are welcome! 🚀
-1.Fork the repository
-2.Create a new branch
-git checkout -b feature/your-feature-name
-3.Commit your changes
-git commit -am "Add new feature"
-4.Push to your branch
-git push origin feature/your-feature-name
-5.Open a Pull Request
-```
+Contributions are welcome! 🚀  
+
+1.Fork the repository  
+2.Create a new branch  
+git checkout -b feature/your-feature-name  
+3.Commit your changes  
+git commit -am "Add new feature"  
+4.Push to your branch  
+git push origin feature/your-feature-name  
+5.Open a Pull Request  
+
 ---
 🙏 **Acknowledgements**  
-Al-Fatah Team
+Al-Fatah Team  
 Open-source community
 
 ---
