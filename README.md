@@ -128,7 +128,7 @@ node server.js
 1.Enter the Product ID  
 2.Click View  
 
-✏️ **Updating a Category** 
+✏️ **Updating a Category**   
 1.View the category using Product ID  
 2.Modify the category  
 3.Click Update  
