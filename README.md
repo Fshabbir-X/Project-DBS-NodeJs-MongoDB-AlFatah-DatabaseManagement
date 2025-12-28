@@ -116,7 +116,8 @@ npm install
 node server.js
 ```
 ---
-📌 Usage Example – Category Management  
+📌 Usage Example – Category Management 
+
 ➕ **Adding a New Category**  
 1.Navigate to the Category section  
 2.Enter the Product ID  
