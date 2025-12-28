@@ -115,28 +115,28 @@ npm install
 # Start the server
 node server.js
 ```
+---
+📌 Usage Example – Category Management  
+➕ **Adding a New Category**  
+1.Navigate to the Category section  
+2.Enter the Product ID  
+3.Select the Product Category  
+4.Click Add  
 
-📌 Usage Example – Category Management
-➕ Adding a New Category
-1.Navigate to the Category section
-2.Enter the Product ID
-3.Select the Product Category
-4.Click Add
+👀 **Viewing a Category**  
+1.Enter the Product ID  
+2.Click View  
 
-👀 Viewing a Category
-1.Enter the Product ID
-2.Click View
+✏️ **Updating a Category** 
+1.View the category using Product ID  
+2.Modify the category  
+3.Click Update  
 
-✏️ Updating a Category
-1.View the category using Product ID
-2.Modify the category
-3.Click Update
+🗑️ **Deleting a Category**  
+1.Enter the Product ID  
+2.Click Delete  
 
-🗑️ Deleting a Category
-1.Enter the Product ID
-2.Click Delete
-
-🔁 The same workflow applies to other modules such as Products, Customers, Employees, Inventory, etc.
+🔁 The same workflow applies to other modules such as Products, Customers, Employees, Inventory, etc.  
 
 ---
 📁 **File Overview**  
