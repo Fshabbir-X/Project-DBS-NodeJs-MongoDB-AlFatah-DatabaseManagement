@@ -162,19 +162,3 @@ Open-source community
 
 ⭐ Support
 If you find this project useful, don’t forget to give it a star ⭐ — it really helps!
-
----
-
-### ✅ What this improves
-- Clean Markdown formatting
-- Emojis for readability & engagement
-- Clear navigation for recruiters & lecturers
-- Professional **full-stack project presentation**
-
-If you want next:
-- Add **screenshots**
-- Add **API documentation**
-- Make it **CV / internship optimized**
-- Add **badges (Node, MongoDB, Express)**
-
-Just tell me 👍
