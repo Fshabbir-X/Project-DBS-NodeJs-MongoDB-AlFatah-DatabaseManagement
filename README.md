@@ -155,10 +155,12 @@ git commit -am "Add new feature"
 4.Push to your branch
 git push origin feature/your-feature-name
 5.Open a Pull Request
-
-🙏 Acknowledgements
+```
+---
+🙏 **Acknowledgements**  
 Al-Fatah Team
 Open-source community
 
-⭐ Support
+---
+⭐ **Support**  
 If you find this project useful, don’t forget to give it a star ⭐ — it really helps!
